@@ -2,7 +2,7 @@
 
 中英双语静态主页，包含研究介绍、教育经历、论文、项目视频与求职简历。
 
-预期访问地址：https://xhaol.github.io/haoliang/
+预期访问地址：https://xhaol.github.io/haoliangxu/
 
 ## 本地预览
 
