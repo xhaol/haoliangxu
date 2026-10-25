@@ -45,6 +45,8 @@
   });
   document.querySelectorAll('video').forEach(video => {
     video.muted = true;
+    video.setAttribute('controlslist', 'nodownload');
+    video.addEventListener('contextmenu', event => event.preventDefault());
     video.addEventListener('play', () => document.querySelectorAll('video').forEach(other => { if (other !== video) other.pause(); }));
   });
   document.querySelectorAll('[data-open-video]').forEach(button => {
