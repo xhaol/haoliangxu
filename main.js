@@ -4,6 +4,8 @@
   const dialog = document.getElementById('video-dialog');
   const dialogPlayer = document.getElementById('dialog-player');
   let activeMoment = null;
+  let sourceVideo = null;
+  const fullscreenButton = document.getElementById('fullscreen-video');
   let language = 'zh';
   try { if (localStorage.getItem('hx-language') === 'en') language = 'en'; } catch (_) {}
   function applyLanguage() {
@@ -49,25 +51,80 @@
     video.addEventListener('contextmenu', event => event.preventDefault());
     video.addEventListener('play', () => document.querySelectorAll('video').forEach(other => { if (other !== video) other.pause(); }));
   });
-  document.querySelectorAll('[data-open-video]').forEach(button => {
-    button.addEventListener('click', () => {
-      activeMoment = button;
-      document.getElementById('video-dialog-title').textContent = button.getAttribute('data-title-' + language);
-      dialogPlayer.src = 'assets/videos/' + button.dataset.openVideo + '.mp4';
-      dialogPlayer.poster = 'assets/videos/' + button.dataset.openVideo + '.jpg';
-      dialog.showModal();
-      document.body.classList.add('modal-open');
-      dialogPlayer.play().catch(() => {});
-    });
-  });
-  document.getElementById('close-video').addEventListener('click', () => dialog.close());
-  dialog.addEventListener('click', event => { if (event.target === dialog) { const r = dialog.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) dialog.close(); } });
-  dialog.addEventListener('close', () => {
+  function closePlayer() {
+    if (typeof dialog.close === 'function') dialog.close();
+    else {
+      dialog.removeAttribute('open');
+      finishClose();
+    }
+  }
+  function finishClose() {
+    if (document.fullscreenElement === dialog && document.exitFullscreen) {
+      document.exitFullscreen().catch(() => {});
+    } else if (document.webkitFullscreenElement === dialog && document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    }
+    dialogPlayer.onloadedmetadata = null;
+    const time = dialogPlayer.currentTime;
     dialogPlayer.pause();
+    if (sourceVideo && Number.isFinite(time)) {
+      try { sourceVideo.currentTime = time; } catch (_) {}
+    }
     dialogPlayer.removeAttribute('src');
     dialogPlayer.load();
     document.body.classList.remove('modal-open');
     if (activeMoment) activeMoment.focus();
+  }
+  function openPlayer(button) {
+    activeMoment = button;
+    sourceVideo = button.closest('.project-media').querySelector('video');
+    const time = sourceVideo.currentTime || 0;
+    sourceVideo.pause();
+    document.getElementById('video-dialog-title').textContent = button.getAttribute('data-title-' + language);
+    dialogPlayer.src = sourceVideo.getAttribute('src');
+    dialogPlayer.poster = sourceVideo.poster;
+    dialogPlayer.loop = sourceVideo.loop;
+    dialogPlayer.muted = true;
+    dialogPlayer.onloadedmetadata = () => {
+      if (Number.isFinite(time) && time > 0) dialogPlayer.currentTime = time;
+    };
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+    else dialog.setAttribute('open', '');
+    document.body.classList.add('modal-open');
+    fullscreenButton.hidden = !(
+      dialog.requestFullscreen || dialog.webkitRequestFullscreen || dialogPlayer.webkitEnterFullscreen
+    );
+    dialogPlayer.play().catch(() => {});
+  }
+  document.querySelectorAll('[data-open-video]').forEach(button => {
+    button.addEventListener('click', () => openPlayer(button));
+    const inlineVideo = button.closest('.project-media').querySelector('video');
+    inlineVideo.addEventListener('dblclick', event => {
+      event.preventDefault();
+      openPlayer(button);
+    });
+  });
+  fullscreenButton.addEventListener('click', async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else if (document.webkitFullscreenElement && document.webkitExitFullscreen) document.webkitExitFullscreen();
+      else if (dialog.requestFullscreen) await dialog.requestFullscreen();
+      else if (dialog.webkitRequestFullscreen) dialog.webkitRequestFullscreen();
+      else if (dialogPlayer.webkitEnterFullscreen) dialogPlayer.webkitEnterFullscreen();
+    } catch (_) {
+      // Keep the viewport-sized player open if the browser denies native fullscreen.
+    }
+  });
+  document.getElementById('close-video').addEventListener('click', closePlayer);
+  dialog.addEventListener('click', event => {
+    if (event.target === dialog) {
+      const r = dialog.getBoundingClientRect();
+      if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) closePlayer();
+    }
+  });
+  dialog.addEventListener('close', finishClose);
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && dialog.hasAttribute('open') && typeof dialog.showModal !== 'function') closePlayer();
   });
   applyLanguage();
 })();
