@@ -1,0 +1,77 @@
+name: Publish website
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: website-pages
+  cancel-in-progress: false
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Record Pages configuration
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DEPLOYMENT_RESULT: pending
+        run: python3 .github/scripts/pages-status.py
+
+  deploy:
+    needs: inspect
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/configure-pages@v5
+      - name: Prepare static website
+        run: |
+          mkdir _site
+          cp index.html main.js style.css .nojekyll _site/
+          cp -R assets projects _site/
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: '300000'
+
+  report:
+    if: always()
+    needs: [inspect, deploy]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Record deployment result
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DEPLOYMENT_RESULT: ${{ needs.deploy.result }}
+        run: python3 .github/scripts/pages-status.py
