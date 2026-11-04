@@ -15,6 +15,7 @@
       link.setAttribute('aria-label', (language === 'zh' ? '放大查看：' : 'Enlarge: ') + caption);
       link.querySelector('img').alt = caption;
     });
+    document.querySelectorAll('video[data-label-zh]').forEach(video => video.setAttribute('aria-label', video.getAttribute('data-label-' + language)));
     if (activeFigure) {
       document.getElementById('figure-title').textContent = captionFor(activeFigure);
       document.getElementById('figure-large').alt = captionFor(activeFigure);
@@ -24,6 +25,14 @@
     language = language === 'zh' ? 'en' : 'zh';
     applyLanguage();
     try { localStorage.setItem('hx-language', language); } catch (_) {}
+  });
+  document.querySelectorAll('video').forEach(video => {
+    video.muted = true;
+    video.setAttribute('controlslist', 'nodownload');
+    video.addEventListener('contextmenu', event => event.preventDefault());
+    video.addEventListener('play', () => document.querySelectorAll('video').forEach(other => {
+      if (other !== video) other.pause();
+    }));
   });
   const dialog = document.getElementById('figure-dialog');
   const largeImage = document.getElementById('figure-large');
