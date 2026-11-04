@@ -9,7 +9,7 @@
     document.querySelectorAll('[data-zh][data-en]').forEach(el => { el.textContent = el.dataset[language]; });
     languageButton.textContent = language === 'zh' ? 'EN ↔' : '中文 ↔';
     languageButton.setAttribute('aria-label', language === 'zh' ? 'Switch to English' : '切换到中文');
-    document.title = language === 'zh' ? 'BiDexGen · 许浩良' : 'BiDexGen · Haoliang Xu';
+    document.title = (document.body.dataset.project || 'BiDexGen') + (language === 'zh' ? ' · 许浩良' : ' · Haoliang Xu');
     document.querySelectorAll('[data-figure]').forEach(link => {
       const caption = captionFor(link);
       link.setAttribute('aria-label', (language === 'zh' ? '放大查看：' : 'Enlarge: ') + caption);
