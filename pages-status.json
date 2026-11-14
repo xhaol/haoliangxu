@@ -1,8 +1,8 @@
 {
-  "commit": "60915a2addef7f35f1089e973534434e6e15c674",
-  "run_id": "43542715914",
-  "updated_at": "2026-11-14T01:48:38.350098+00:00",
-  "deployment_result": "success",
+  "commit": "a3ba0832d3c942b57340b88d96300391586123e7",
+  "run_id": "43543835253",
+  "updated_at": "2026-11-14T02:00:30.923611+00:00",
+  "deployment_result": "pending",
   "repository": {
     "private": false,
     "has_pages": true,
@@ -10,7 +10,7 @@
     "archived": false
   },
   "pages": {
-    "status": "built",
+    "status": "building",
     "build_type": "legacy",
     "source": {
       "branch": "main",
@@ -21,96 +21,17 @@
     "https_enforced": true
   },
   "latest_build": {
-    "status": "built",
-    "commit": "60915a2addef7f35f1089e973534434e6e15c674",
+    "status": "building",
+    "commit": "a3ba0832d3c942b57340b88d96300391586123e7",
     "error": {
       "message": null
     },
-    "created_at": "2026-11-14T01:47:58Z",
-    "updated_at": "2026-11-14T01:48:23Z"
+    "created_at": "2026-11-14T02:00:19Z",
+    "updated_at": "2026-11-14T02:00:19Z"
   },
   "jobs": [
     {
       "name": "inspect",
-      "status": "completed",
-      "conclusion": "success",
-      "steps": [
-        {
-          "name": "Set up job",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "name": "Run actions/checkout@v6",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "name": "Record Pages configuration",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "name": "Post Run actions/checkout@v6",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "name": "Complete job",
-          "status": "completed",
-          "conclusion": "success"
-        }
-      ]
-    },
-    {
-      "name": "deploy",
-      "status": "completed",
-      "conclusion": "success",
-      "steps": [
-        {
-          "name": "Set up job",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "name": "Run actions/checkout@v6",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "name": "Run actions/configure-pages@v5",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "name": "Prepare static website",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "name": "Run actions/upload-pages-artifact@v4",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "name": "Deploy website",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "name": "Post Run actions/checkout@v6",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "name": "Complete job",
-          "status": "completed",
-          "conclusion": "success"
-        }
-      ]
-    },
-    {
-      "name": "report",
       "status": "in_progress",
       "conclusion": null,
       "steps": [
@@ -125,7 +46,7 @@
           "conclusion": "success"
         },
         {
-          "name": "Record deployment result",
+          "name": "Record Pages configuration",
           "status": "in_progress",
           "conclusion": null
         },
