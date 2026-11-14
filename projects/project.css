@@ -16,3 +16,5 @@ body[data-project="ParaDexGrasp"] h1{font-size:clamp(38px,5.5vw,62px);letter-spa
 @media(max-width:650px){.demo-figure video{height:280px}.demo-grid{grid-template-columns:1fr;gap:23px}.inhand-method-copy{display:block}.inhand-method-copy h3:not(:first-child){margin-top:18px}}
 
 body[data-project="Tactile RL"] h1{font-size:clamp(42px,5.5vw,62px)}body[data-project="Tactile RL"] .method-panel{grid-template-columns:1.5fr 1fr;gap:34px}body[data-project="Tactile RL"] .method-panel img{max-height:290px}body[data-project="Tactile RL"] .method-copy p{max-width:none}@media(max-width:750px){body[data-project="Tactile RL"] .method-panel{grid-template-columns:1fr;gap:18px}body[data-project="Tactile RL"] .method-panel figure{max-width:650px}}
+
+.paradex-demo{max-width:680px;margin:20px auto 28px}.paradex-demo video{height:360px;width:100%;object-fit:contain}@media(max-width:650px){.paradex-demo video{height:280px}}
